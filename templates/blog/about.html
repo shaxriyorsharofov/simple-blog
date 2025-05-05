@@ -1,0 +1,113 @@
+{% extends 'blog/base.html' %}
+{% block main %}
+{% load static %}
+    <div class="row tm-row tm-mb-40">
+        <div class="col-12">                    
+            <div class="mb-4">
+                <h2 class="pt-2 tm-mb-40 tm-color-primary tm-post-title">About this simple blog</h2>
+                <p>
+                    Simple Blog is a sleek and modern blogging platform designed to make it easy for users to create and share their thoughts with the world. 
+                    It is an ideal platform for both beginners and seasoned bloggers, offering a clean and minimalistic interface that focuses on the content itself.
+                     With a simple yet effective design, Simple Blog allows users to publish articles, post images, and share their experiences in a seamless way.
+                      Whether you are a passionate writer, a professional content creator, or someone who wants to share personal stories with a wider audience, Simple Blog provides an intuitive space to get started.
+                
+                       The platform’s responsive design ensures that your blog looks great on all devices, whether viewed on a desktop, tablet, or mobile phone. 
+                       One of the key features of Simple Blog is its flexibility. The platform offers a range of customizable templates, enabling you to adjust the look and feel of your blog according to your personal pref
+                       erences. 
+                </p>                            
+            </div>                    
+        </div>
+    </div>
+    <div class="row tm-row tm-mb-120">
+        <div class="col-lg-4 tm-about-col">
+            <div class="tm-bg-gray tm-about-pad">
+                <div class="text-center tm-mt-40 tm-mb-60">
+                    <i class="fas fa-bezier-curve fa-4x tm-color-primary"></i>                            
+                </div>                        
+                <h2 class="mb-3 tm-color-primary tm-post-title">Background</h2>
+                <p class="mb-0 tm-line-height-short">
+                    Phasellus pulvinar nisl ornare leo porttitor, et vestibulum lorem semper. 
+                    Duis risus ex, molestie sit amet magna in,
+                    pharetra pellentesque est. Curabitur elit metus.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4 tm-about-col">
+            <div class="tm-bg-gray tm-about-pad">
+                <div class="text-center tm-mt-40 tm-mb-60">
+                    <i class="fas fa-users-cog fa-4x tm-color-primary"></i>                            
+                </div>                        
+                <h2 class="mb-3 tm-color-primary tm-post-title">Teamwork</h2>
+                <p class="mb-0 tm-line-height-short">
+                    Suspendisse ullamcorper, mi vel molestie ornare, arcu magna euismod ipsum, in malesuada nulla magna ut enim. 
+                    Morbi lacinia magna sed auctor, vitae nunc cursus.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-4 tm-about-col">
+            <div class="tm-bg-gray tm-about-pad">
+                <div class="text-center tm-mt-40 tm-mb-60">
+                    <i class="fab fa-creative-commons-sampling fa-4x tm-color-primary"></i>                            
+                </div>                        
+                <h2 class="mb-3 tm-color-primary tm-post-title">Our Core Value</h2>
+                <p class="mb-0 tm-line-height-short">
+                    Nunc mi ante, suscipit vel dapibus et, volutpat sit amet ante. In tempor nec sem vitae varius. Aliquam tincidunt orci sem, et imperdiet massa consectetur nec.
+                </p>
+            </div>
+        </div>
+    </div>            
+    <div class="row tm-row tm-mb-60">
+        <div class="col-12">
+            <hr class="tm-hr-primary  tm-mb-55">
+        </div>                
+        <div class="col-lg-6 tm-mb-60 tm-person-col">
+            <div class="media tm-person">
+                <img src="{% static 'img/about-02.jpg' %}" alt="Image" class="img-fluid mr-4">
+                <div class="media-body">
+                    <h2 class="tm-color-primary tm-post-title mb-2">Samandar Nemataliyev</h2>
+                    <h3 class="tm-h3 mb-3">Team Member</h3>
+                    <p class="mb-0 tm-line-height-short">
+                        Python & Django web developer from Fergana.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 tm-mb-60 tm-person-col">
+            <div class="media tm-person">
+                <img src="{% static 'img/about-03.jpg' %}" alt="Image" class="img-fluid mr-4">
+                <div class="media-body">
+                    <h2 class="tm-color-primary tm-post-title mb-2">Shohjahon Nurxanov</h2>
+                    <h3 class="tm-h3 mb-3">Team Member</h3>
+                    <p class="mb-0 tm-line-height-short">
+                        Python & Django web developer from Samarqand.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 tm-mb-60 tm-person-col">
+            <div class="media tm-person">
+                <img src="{% static 'img/about-05.jpg' %}" alt="Image" class="img-fluid mr-4">
+                <div class="media-body">
+                    <h2 class="tm-color-primary tm-post-title mb-2">Madinaxon Maxmudova</h2>
+                    <h3 class="tm-h3 mb-3">Team Member</h3>
+                    <p class="mb-0 tm-line-height-short">
+                        Python & Django web developer from Tashkent.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 tm-mb-60 tm-person-col">
+            <div class="media tm-person">
+                <img src="{% static 'img/about-05.jpg' %}" alt="Image" class="img-fluid mr-4">
+                <div class="media-body">
+                    <h2 class="tm-color-primary tm-post-title mb-2">Nasiba Alisherova</h2>
+                    <h3 class="tm-h3 mb-3">Team Member</h3>
+                    <p class="mb-0 tm-line-height-short">
+                        Python & Django web developer from Tashkent.
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>        
+{% endblock %}

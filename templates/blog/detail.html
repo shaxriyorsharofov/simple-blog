@@ -1,0 +1,354 @@
+{% extends 'blog/base.html' %}
+{% block main %}
+
+
+<div class="row tm-row">
+                <div class="post_commentbox">
+    <a href="#" class="views"><i class="fa fa-eye"></i>{{ post_.views }}</a>
+    <span class="created_at"><i class="fa fa-calendar"></i>{{ post_.created_at.date }}</span>
+
+</div>
+
+            <div class="row tm-row">
+                <div class="col-12">
+                    {% if post_.image %}
+                    {% load static %}
+                        <img width="854" height="535" src="{{ post_.image.url }}" alt="Image" class="tm-mb-40">
+                    {% else %}
+                        <img width="854" height="535" src="{% static 'img/default.png' %}" alt="Image" class="tm-mb-40">
+                    {% endif %}
+                </div>
+            <div class="row tm-row">
+                <div class="col-lg-8 tm-post-col">
+                    <div class="tm-post-full">                    
+                        <div class="mb-4" style="background-color: white; padding: 20px; border-radius: 4px;">
+                            <h2 class="pt-2 tm-color-primary tm-post-title">{{ post_.title }}</h2>
+                            <p class="tm-mb-40" style="color: #666;">{{ post_.created_at.date }} posted by {{ post_.author.first_name }}</p>
+                            <p style="line-height: 1.6;">{{ post_.content|safe }}</p>
+
+                            <div style="margin: 20px 0; display: flex; gap: 15px;">
+                                <a href="{% url 'blog:post_update' post_.pk %}"
+                                   style="padding: 8px 15px;
+                                          background-color: #3498db;
+                                          color: white;
+                                          text-decoration: none;
+                                          border-radius: 4px;
+                                          transition: background-color 0.3s;
+                                          font-size: 14px;
+                                          border: 1px solid #2980b9;">
+                                   Postni yangilash
+                                </a>
+                                <a href="{% url 'blog:post_delete' post_.pk %}"
+                                   style="padding: 8px 15px;
+                                          background-color: #e74c3c;
+                                          color: white;
+                                          text-decoration: none;
+                                          border-radius: 4px;
+                                          transition: background-color 0.3s;
+                                          font-size: 14px;
+                                          border: 1px solid #c0392b;">
+                                   Postni o'chirish
+                                </a>
+                                <button id="like-btn"
+        data-post-id="{{ post_.id }}"
+        class="tm-btn tm-btn-primary like-btn {% if request.user in post_.likes.all %}liked{% endif %}"
+        data-liked="{% if request.user in post_.likes.all %}true{% else %}false{% endif %}"
+        style="margin-top: 15px; padding: 8px 15px; background-color: #2ecc71; border: none; border-radius: 4px; color: white; cursor: pointer;">
+        <i class="fas fa-thumbs-up"></i>
+        <span id="like-count">{{ post_.likes.count }}</span>
+    </button>
+    </div>
+
+    <span class="d-block text-right" style="margin-top: 20px;">
+    {% for ctg in post_.categories.all %}
+        <a href="{% url 'blog:category_posts' ctg.pk %}"
+           style="display: inline-block;
+                  padding: 4px 12px;
+                  background-color: #f8f9fa;
+                  color: #3498db;
+                  text-decoration: none;
+                  margin-left: 8px;
+                  border-radius: 16px;
+                  border: 1px solid #e0e0e0;
+                  font-size: 13px;
+                  transition: all 0.3s ease;
+                  box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+           {{ ctg.name }}
+        </a>
+    {% endfor %}
+</span>
+
+
+</div>
+                        
+                        <!-- Comments -->
+                        <!-- Comments -->
+<!-- Comments -->
+<div>
+    <h2 class="tm-color-primary tm-post-title">Comments</h2>
+    <hr class="tm-hr-primary tm-mb-45">
+    <form id="commentForm" method="POST" action="{% url 'blog:post_comment' %}" class="mb-5 tm-comment-form">
+        {% csrf_token %}
+        <h2 class="tm-color-primary tm-post-title mb-4">Your comment</h2>
+        <div class="mb-4">
+            <textarea id="commentMessage" class="form-control" name="message" rows="6"></textarea>
+        </div>
+        <input type="hidden" id="postId" name="post_id" value="{{ post_.id }}">
+        <div class="text-right">
+            <button id="commentSubmit" class="tm-btn tm-btn-primary tm-btn-small" type="submit">Submit</button>
+        </div>
+    </form>
+
+    <!-- Comments container -->
+    <div id="commentsContainer">
+        {% for comment in comments %}
+            <div class="tm-comment tm-mb-45 {% if forloop.counter > 2 %}comment-hidden{% endif %}"
+                 data-comment-id="{{ forloop.counter }}">
+                <figure class="tm-comment-figure">
+                    {% if comment.author.profile.avatar %}
+                        {% load static %}
+                        <img src="{{ comment.author.profile.avatar.url }}" alt="Image" class="mb-2 rounded-circle img-thumbnail" style="width: 40px; height: 40px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'img/user_comment.png' %}" alt="Image" class="mb-2 rounded-circle img-thumbnail" style="width: 40px; height: 40px; object-fit: cover;">
+                    {% endif %}
+                    <figcaption class="tm-color-primary text-center">
+                        {{ comment.author.first_name }} {{ comment.author.last_name }}
+                    </figcaption>
+                </figure>
+                <div>
+                    <p>{{ comment.content|safe }}</p>
+                    <div class="d-flex justify-content-between">
+                        <span class="tm-color-primary">{{ comment.created_at.date }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Show More/Show Less buttons (only visible if there are more than 2 comments) -->
+    {% if comments|length > 2 %}
+        <div class="text-center mt-4">
+            <button id="showMoreComments" class="tm-btn tm-btn-primary">Show More</button>
+            <button id="showLessComments" class="tm-btn tm-btn-primary" style="display: none;">Show Less</button>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .comment-hidden {
+        display: none;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const showMoreButton = document.getElementById('showMoreComments');
+        const showLessButton = document.getElementById('showLessComments');
+        const allComments = document.querySelectorAll('.tm-comment');
+        const defaultVisible = 2;
+
+        if (showMoreButton && showLessButton) {
+            showMoreButton.addEventListener('click', function() {
+                // Show all comments
+                document.querySelectorAll('.comment-hidden').forEach(comment => {
+                    comment.classList.remove('comment-hidden');
+                });
+
+                // Toggle buttons
+                showMoreButton.style.display = 'none';
+                showLessButton.style.display = 'inline-block';
+            });
+
+            showLessButton.addEventListener('click', function() {
+                // Hide all comments beyond the default visible count
+                allComments.forEach((comment, index) => {
+                    if (index >= defaultVisible) {
+                        comment.classList.add('comment-hidden');
+                    }
+                });
+
+                // Toggle buttons
+                showLessButton.style.display = 'none';
+                showMoreButton.style.display = 'inline-block';
+
+                // Scroll to comments section for better UX
+                document.getElementById('commentsContainer').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+    });
+</script>
+                    </div>
+                </div>
+                <aside class="col-lg-4 tm-aside-col">
+                    <div class="tm-post-sidebar">
+                        <hr class="mb-3 tm-hr-primary">
+                        <h2 class="mb-4 tm-post-title tm-color-primary">Categories</h2>
+                        <ul class="tm-mb-75 pl-5 tm-category-list">
+                            {% for ctg in categories %}
+                            <li><a href="{% url 'blog:category_posts' ctg.pk %}" class="tm-color-primary">{{ ctg.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        <hr class="mb-3 tm-hr-primary">
+                        <h2 class="tm-mb-40 tm-post-title tm-color-primary">Related Posts</h2>
+                        {% for post in related_posts %}
+                        <a href="{{ post.get_absolute_url }}" class="d-block tm-mb-40">
+                            <figure>
+                                {% if post.image %}
+                    {% load static %}
+                        <img width="854" height="535" src="{{ post.image.url }}" alt="Image" class="mb-2 rectangle img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                    {% else %}
+                        <img width="854" height="535" src="{% static 'img/default.png' %}" alt="Image" class="mb-2 rectangle img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                    {% endif %}
+                                <figcaption class="tm-color-primary">{{ post.title }}</figcaption>
+                            </figure>
+                        </a>
+                        {% endfor %}
+                    </div>                    
+                </aside>
+            </div>
+
+            <!-- Ushbu JavaScript kod sahifa yangilanmasdan, AJAX yordamida izoh qo‘shadi va yangi izohni sahifaga qo‘shadi. -->
+            <script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("commentForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // Get form values
+        let message = document.getElementById("commentMessage").value.trim();
+        let postId = document.getElementById("postId").value;
+        let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+        // Validate message
+        if (!message) {
+            alert("Izoh bo'sh bo'lmasligi kerak!");
+            return;
+        }
+
+        // Send AJAX request
+        fetch("{% url 'blog:comment' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken
+            },
+            body: new URLSearchParams({
+                "message": message,
+                "post_id": postId
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server responded with status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                let commentsContainer = document.getElementById("commentsContainer");
+
+                // Create new comment HTML
+                let newComment = `
+                    <div class="tm-comment tm-mb-45">
+                        <figure class="tm-comment-figure">
+                            <img src="/static/img/comment-1.jpg" alt="Image" class="mb-2 rounded-circle img-thumbnail">
+                            <figcaption class="tm-color-primary text-center">
+                                ${data.comment.author}
+                            </figcaption>
+                        </figure>
+                        <div>
+                            <p>${data.comment.content}</p>
+                            <div class="d-flex justify-content-between">
+                                <a href="#" class="tm-color-primary">REPLY</a>
+                                <span class="tm-color-primary">${data.comment.created_at}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add new comment to the top and clear the form
+                commentsContainer.innerHTML = newComment + commentsContainer.innerHTML;
+                document.getElementById("commentMessage").value = "";
+            }
+        })
+        .catch(error => {
+            console.error("Xatolik:", error);
+            alert("Something went wrong while submitting your comment. Please try again.");
+        });
+    });
+});
+</script>
+
+ <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const likeButton = document.getElementById('like-btn');
+    const likeCount = document.getElementById('like-count');
+    let isLiked = likeButton.getAttribute('data-liked') === 'true';  // Get initial state from HTML
+
+    // Set initial visual state (just in case)
+    if (isLiked) {
+        likeButton.classList.add('liked');
+    } else {
+        likeButton.classList.remove('liked');
+    }
+
+    likeButton.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const postId = this.getAttribute('data-post-id');
+        const url = `/like-post/${postId}/`;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            likeCount.textContent = data.like_count;
+            isLiked = data.status === 'liked';  // Update local state
+
+            // Update visual feedback
+            if (isLiked) {
+                likeButton.classList.add('liked');
+            } else {
+                likeButton.classList.remove('liked');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+
+// CSRF token helper function (unchanged)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<style>
+.like-btn {
+    background-color: #ccc;  /* Default state */
+    transition: background-color 0.3s;  /* Smooth transition */
+}
+
+.like-btn.liked {
+    background-color: #007bff;
+    color: white;
+}
+</style>
+
+{% endblock %}

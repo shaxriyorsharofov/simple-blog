@@ -1,0 +1,10 @@
+Django
+django-ckeditor
+django-js-asset
+gunicorn
+pillow
+psycopg2-binary
+psycopg2
+python-dotenv
+
+
